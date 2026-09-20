@@ -439,7 +439,6 @@ def parse_markdown(text):
             level, label = len(mh.group(1)) - 1, mh.group(2).strip()
         elif mb:
             indent = mb.group(1).replace("\t", "  ")
-            base = stack[-1][0] + 1 if stack and stack[-1][0] >= 0 else 0
             # heading depth already consumed; bullets nest under last heading
             hlevels = [l for l, n in stack if n.get("_h")]
             level = (max(hlevels) + 1 if hlevels else 0) + len(indent) // 2

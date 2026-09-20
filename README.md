@@ -1,10 +1,11 @@
-# itmz — a Claude Code skill for iThoughts mind maps
+# ithoughts-mindmaps — an agent skill for iThoughts mind maps
 
 Let a coding agent read, create, and edit **iThoughts** mind maps (`.itmz`) the
 way it edits code: search the tree, open a node, change it, save.
 
 Pure Python 3.8+, **standard library only**. No install, no dependencies, no
-network. Works as a Claude Code skill *and* as a plain CLI.
+network. Works as a skill for any coding agent — not tied to Claude — *and* as
+a plain CLI.
 
 ```console
 $ itmz.py tree 第4章.itmz --depth 1
@@ -35,19 +36,21 @@ uuid instead of by retyping long text.
 
 ## Install
 
-**As a Claude Code skill** — clone straight into your skills directory:
+**As an agent skill** — clone straight into your agent's skills directory
+(e.g. `~/.claude/skills/` for Claude Code; other agents have their own):
 
 ```bash
-git clone https://github.com/<you>/claude-skill-itmz ~/.claude/skills/itmz
+git clone https://github.com/<you>/ithoughts-mindmaps ~/.claude/skills/ithoughts-mindmaps
 ```
 
-Claude picks it up automatically; mention a `.itmz` file and the skill loads.
-For a project-local install use `.claude/skills/itmz` instead.
+The agent picks it up automatically; mention a `.itmz` file and the skill
+loads. For a project-local install, clone it into the project's skills
+directory instead.
 
 **As a plain CLI** — the script stands alone:
 
 ```bash
-curl -O https://raw.githubusercontent.com/<you>/claude-skill-itmz/main/scripts/itmz.py
+curl -O https://raw.githubusercontent.com/<you>/ithoughts-mindmaps/main/scripts/itmz.py
 chmod +x itmz.py && ./itmz.py --help
 ```
 
@@ -63,10 +66,11 @@ chmod +x itmz.py && ./itmz.py --help
 | `new` | create an empty map |
 | `add` `set` `mv` `rm` | single-topic edits |
 | `import` | graft a markdown or JSON outline in; `--replace` a branch, or `--as-root` to build a whole map from one file |
-| `relayout` | recompute every coordinate |
+| `relayout` | recompute the tree's coordinates (see Limits for exceptions) |
 
 Writes go in place with a `.bak` alongside, or elsewhere with `-o`.
-See [SKILL.md](SKILL.md) for the full reference and the file-format notes.
+See [SKILL.md](SKILL.md) for the full reference; editing details and format
+internals live in [references/](references/).
 
 ### Bulk edits
 
@@ -138,7 +142,8 @@ write on an ambiguous selector, and the layout formulas above.
 ## Limits
 
 - Layout covers the standard right-side tree. Radial maps, `boundary` groups,
-  floating topics and callouts keep their stored coordinates.
+  floating topics and callouts keep their stored coordinates — and so do the
+  descendants of a folded topic; `relayout` treats it as a leaf.
 - `note`, `link`, `icons`, `color`, `task-*` and other optional attributes are
   written and preserved verbatim, but were not verified against every
   iThoughts version — check the result in the app the first time you use one.
